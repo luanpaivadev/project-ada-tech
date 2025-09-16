@@ -27,7 +27,7 @@ services:
     ports:
       - "8093:8093"
     volumes:
-      - "C:/Users/luan.paiva/Documents/Projeto ADA/public_key.pem:/app/keys/public_key.pem:ro"
+      - "C:/Users/luan.paiva/Documents/Projeto ADA/project-ada-tech/public_key.pem:/app/keys/public_key.pem:ro"
     networks:
       - local_ecommerce-services
     depends_on:
