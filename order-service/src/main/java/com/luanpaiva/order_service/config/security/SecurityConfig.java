@@ -36,6 +36,7 @@ public class SecurityConfig {
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(req -> {
                     req.requestMatchers(HttpMethod.GET, "/actuator/**").permitAll();
+                    req.requestMatchers(HttpMethod.POST, "/v1/orders/webhook/payment").permitAll();
                     req.requestMatchers(HttpMethod.GET, "/v1/orders/internal/**").hasRole("SERVICE");
                     req.requestMatchers(HttpMethod.GET, "/v1/orders/in-separation/**").hasRole("EMPLOYEE");
                     req.requestMatchers(HttpMethod.PUT, "/v1/orders/update-status/**").hasRole("EMPLOYEE");

@@ -9,11 +9,11 @@ import com.luanpaiva.order_service.config.properties.AuthServiceProperties;
 import com.luanpaiva.order_service.config.properties.OrderServiceProperties;
 import com.luanpaiva.order_service.core.exception.InternalServerErrorException;
 import com.luanpaiva.order_service.core.ports.out.AuthServicePort;
+import com.luanpaiva.order_service.core.ports.out.CacheServicePort;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
 
@@ -36,7 +36,8 @@ public class AuthService implements AuthServicePort {
 
     @Value("${jwt.public-key-path}")
     private String publicKeyPath;
-    private final RedisTemplate<String, Object> redisTemplate;
+
+    private final CacheServicePort<String, Object> cacheServicePort;
     private final AuthServiceProperties authServiceProperties;
     private final OrderServiceProperties orderServiceProperties;
 
@@ -67,7 +68,7 @@ public class AuthService implements AuthServicePort {
     @Override
     public String getInternalToken(String key) {
         try {
-            Object accessToken = redisTemplate.opsForValue().get(key);
+            Object accessToken = cacheServicePort.get(key);
             if (isNull(accessToken)) {
                 String host = authServiceProperties.getHost();
                 String getInternalTokenUrl = authServiceProperties.getGetInternalTokenUrl();
@@ -80,14 +81,14 @@ public class AuthService implements AuthServicePort {
                         .body(BearerToken.class);
                 if (nonNull(response)) {
                     String bearerToken = response.getAccessToken();
-                    redisTemplate.opsForValue().set(key, bearerToken);
+                    cacheServicePort.set(key, bearerToken);
                     return bearerToken;
                 }
                 throw new InternalServerErrorException("Error obtaining internal token.");
             }
             DecodedJWT decodedJWT = validateToken((String) accessToken);
             if (isNull(decodedJWT)) {
-                redisTemplate.delete(key);
+                cacheServicePort.delete(key);
                 return getInternalToken(key);
             }
             return (String) accessToken;

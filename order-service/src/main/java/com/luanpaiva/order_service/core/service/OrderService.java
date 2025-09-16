@@ -13,6 +13,7 @@ import com.luanpaiva.order_service.core.model.Product;
 import com.luanpaiva.order_service.core.model.StatusOrder;
 import com.luanpaiva.order_service.core.ports.in.OrderServicePort;
 import com.luanpaiva.order_service.core.ports.out.AuthServicePort;
+import com.luanpaiva.order_service.core.ports.out.CacheServicePort;
 import com.luanpaiva.order_service.core.ports.out.OrderRepositoryPort;
 import com.luanpaiva.order_service.core.ports.out.ProductServicePort;
 import com.luanpaiva.order_service.core.ports.out.SendMessagePort;
@@ -25,6 +26,9 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
+import static java.util.Objects.nonNull;
+import static org.apache.commons.lang3.StringUtils.isBlank;
+
 public class OrderService implements OrderServicePort {
 
     private static final String NOTIFICATION_STATUS_ORDER = "notification.status_order";
@@ -34,13 +38,15 @@ public class OrderService implements OrderServicePort {
     private final ProductServicePort productServicePort;
     private final SendMessagePort sendMessagePort;
     private final AuthServicePort authServicePort;
+    private final CacheServicePort<String, Object> cacheServicePort;
 
     public OrderService(OrderRepositoryPort orderRepositoryPort, ProductServicePort productServicePort,
-                        SendMessagePort sendMessagePort, AuthServicePort authServicePort) {
+                        SendMessagePort sendMessagePort, AuthServicePort authServicePort, CacheServicePort<String, Object> cacheServicePort) {
         this.orderRepositoryPort = orderRepositoryPort;
         this.productServicePort = productServicePort;
         this.sendMessagePort = sendMessagePort;
         this.authServicePort = authServicePort;
+        this.cacheServicePort = cacheServicePort;
     }
 
     @Override
@@ -94,7 +100,7 @@ public class OrderService implements OrderServicePort {
     }
 
     @Override
-    public void validatePayment(PaymentWebhookPayload payload) {
+    public void validatePayment(PaymentWebhookPayload payload, String xIdempotencyKey) {
         try {
             Order order = findById(payload.getOrderId());
             switch (payload.getStatusPayment()) {
@@ -128,5 +134,17 @@ public class OrderService implements OrderServicePort {
     @Override
     public Page<OrderDTO> findOrdersInSeparation(Pageable pageable) {
         return orderRepositoryPort.findOrdersInSeparation(pageable);
+    }
+
+    @Override
+    public void validateXIdempotencyKey(String key) {
+        if (isBlank(key)) {
+            throw new BadRequestException("x-idempotency-key not found");
+        }
+        Boolean exists = cacheServicePort.exists(key);
+        if (Boolean.TRUE.equals(exists)) {
+            throw new BadRequestException("Payment already processed");
+        }
+        cacheServicePort.set(key, key);
     }
 }

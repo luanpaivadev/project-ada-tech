@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.luanpaiva.order_service.core.ports.in.OrderServicePort;
 import com.luanpaiva.order_service.core.ports.out.AuthServicePort;
+import com.luanpaiva.order_service.core.ports.out.CacheServicePort;
 import com.luanpaiva.order_service.core.ports.out.OrderRepositoryPort;
 import com.luanpaiva.order_service.core.ports.out.ProductServicePort;
 import com.luanpaiva.order_service.core.ports.out.SendMessagePort;
@@ -33,7 +34,9 @@ public class BeansConfig {
     public OrderServicePort orderServicePort(OrderRepositoryPort orderRepositoryPort,
                                              ProductServicePort productServicePort,
                                              SendMessagePort sendMessagePort,
-                                             AuthServicePort authServicePort) {
-        return new OrderService(orderRepositoryPort, productServicePort, sendMessagePort, authServicePort);
+                                             AuthServicePort authServicePort,
+                                             CacheServicePort<String, Object> cacheServicePort) {
+        return new OrderService(orderRepositoryPort, productServicePort, sendMessagePort, authServicePort,
+                cacheServicePort);
     }
 }

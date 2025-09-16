@@ -18,9 +18,11 @@ public interface OrderServicePort {
 
     Order createNewOrder(OrderInput orderInput, String customerEmail);
 
-    void validatePayment(PaymentWebhookPayload payload);
+    void validatePayment(PaymentWebhookPayload payload, String xIdempotencyKey);
 
     void updateStatusOrder(UUID orderId, StatusOrder statusOrder);
 
     Page<OrderDTO> findOrdersInSeparation(Pageable pageable);
+
+    void validateXIdempotencyKey(String key);
 }
