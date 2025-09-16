@@ -1,0 +1,33 @@
+spring:
+  application:
+    name: notification-service
+  profiles:
+    active: ${PROFILE_ACTIVE:LOCAL}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    generate-ddl: true
+    show-sql: false
+  rabbitmq:
+    host: ${SPRING_RABBITMQ_HOST:localhost}
+    port: ${SPRING_RABBITMQ_PORT:5672}
+    username: ${SPRING_RABBITMQ_USERNAME:user}
+    password: ${SPRING_RABBITMQ_PASSWORD:0d76739a-a5ec-4ee2-a847-56081ce6a6c9}
+
+server:
+  port: ${SERVER_PORT:8094}
+  servlet:
+    context-path: /notification-service
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, metrics, prometheus
+  metrics:
+    enable:
+      jvm: true
+    distribution:
+      slo.http.server.requests: 50ms, 100ms, 200ms, 300ms, 500ms, 1s
+    tags:
+      application: notification-service

@@ -1,0 +1,43 @@
+spring:
+  application:
+    name: order-service
+  profiles:
+    active: ${PROFILE_ACTIVE:LOCAL}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    generate-ddl: true
+    show-sql: false
+  rabbitmq:
+    host: ${SPRING_RABBITMQ_HOST:localhost}
+    port: ${SPRING_RABBITMQ_PORT:5672}
+    username: ${SPRING_RABBITMQ_USERNAME:user}
+    password: ${SPRING_RABBITMQ_PASSWORD:0d76739a-a5ec-4ee2-a847-56081ce6a6c9}
+  cache:
+    type: redis
+  data:
+    redis:
+      host: ${SPRING_DATA_REDIS_HOST:localhost}
+      port: ${SPRING_DATA_REDIS_PORT:6379}
+      password: ${SPRING_DATA_REDIS_PASSWORD:87e0f1b4-ee49-42ea-bdc4-621a62f8f1bd}
+
+server:
+  port: ${SERVER_PORT:8092}
+  servlet:
+    context-path: /order-service
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, metrics, prometheus
+  metrics:
+    enable:
+      jvm: true
+    distribution:
+      slo.http.server.requests: 50ms, 100ms, 200ms, 300ms, 500ms, 1s
+    tags:
+      application: order-service
+
+jwt:
+  public-key-path: ${JWT_PUBLIC_KEY_PATH}

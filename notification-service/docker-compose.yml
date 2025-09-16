@@ -1,0 +1,41 @@
+services:
+
+  notification-service-db:
+    image: postgres
+    container_name: notification-service-db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=notification_service_user@2025!#
+      - POSTGRES_PASSWORD=6fbed52a-ea56-4a64-a66e-c34c754a42a2
+      - POSTGRES_DB=notification_service_db
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    ports:
+      - "5436:5432"
+    networks:
+      - local_ecommerce-services
+    volumes:
+      - notification_service_db_data:/var/lib/postgresql/data
+
+  notification-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: notification-service
+    restart: unless-stopped
+    env_file:
+      - ./notification-service.env
+    ports:
+      - "8094:8094"
+    networks:
+      - local_ecommerce-services
+    depends_on:
+      - notification-service-db
+
+networks:
+  local_ecommerce-services:
+    external: true
+
+volumes:
+  notification_service_db_data:
+    driver: local
+    name: notification_service_db_data

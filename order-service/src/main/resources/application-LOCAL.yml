@@ -1,0 +1,20 @@
+spring-datasource:
+  url: jdbc:postgresql://localhost:5434/order_service_db?serverTimezone=UTC
+  username: order_service_user@2025!#
+  password: 6fbed52a-ea56-4a64-a66e-c34c754a42a2
+  driverClassName: org.postgresql.Driver
+  maximumPoolSize: 5
+  minimumIdle: 5
+  idleTimeout: 30000
+
+order-service:
+  clientId: order-service
+  clientSecret: 66793dcf-fb4d-402e-8cef-5d5e66c9505e
+
+auth-service:
+  host: http://localhost:8091/auth-service
+  getInternalTokenUrl: /v1/auth/internal-token?clientId={0}&clientSecret={1}
+
+product-service:
+  host: http://localhost:8093/product-service
+  checkProductInventory: /v1/products/check-product-inventory/product/{0}/quantity/{1}

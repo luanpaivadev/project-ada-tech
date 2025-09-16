@@ -1,0 +1,43 @@
+services:
+
+  product-service-db:
+    image: postgres
+    container_name: product-service-db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=product_service_user@2025!#
+      - POSTGRES_PASSWORD=6fbed52a-ea56-4a64-a66e-c34c754a42a2
+      - POSTGRES_DB=product_service_db
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    ports:
+      - "5435:5432"
+    networks:
+      - local_ecommerce-services
+    volumes:
+      - product_service_db_data:/var/lib/postgresql/data
+
+  product-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: product-service
+    restart: unless-stopped
+    env_file:
+      - ./product-service.env
+    ports:
+      - "8093:8093"
+    volumes:
+      - "C:/Users/luan.paiva/Documents/Projeto ADA/public_key.pem:/app/keys/public_key.pem:ro"
+    networks:
+      - local_ecommerce-services
+    depends_on:
+      - product-service-db
+
+networks:
+  local_ecommerce-services:
+    external: true
+
+volumes:
+  product_service_db_data:
+    driver: local
+    name: product_service_db_data

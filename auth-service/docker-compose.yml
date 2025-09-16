@@ -1,0 +1,40 @@
+services:
+
+  auth-service-db:
+    image: postgres
+    container_name: auth-service-db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=auth_service_user@2025!#
+      - POSTGRES_PASSWORD=6fbed52a-ea56-4a64-a66e-c34c754a42a2
+      - POSTGRES_DB=auth_service_db
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    ports:
+      - "5433:5432"
+    networks:
+      - local_ecommerce-services
+    volumes:
+      - auth_service_db_data:/var/lib/postgresql/data
+
+  auth-service:
+    build:
+      context: .
+    container_name: auth-service
+    restart: unless-stopped
+    env_file:
+      - ./auth-service.env
+    ports:
+      - "8091:8091"
+    volumes:
+      - "C:/Users/luan.paiva/Documents/Projeto ADA/private_key.pem:/app/keys/private_key.pem:ro"
+    networks:
+      - local_ecommerce-services
+
+networks:
+  local_ecommerce-services:
+    external: true
+
+volumes:
+  auth_service_db_data:
+    driver: local
+    name: auth_service_db_data

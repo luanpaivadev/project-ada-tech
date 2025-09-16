@@ -1,0 +1,20 @@
+spring-datasource:
+  url: jdbc:postgresql://localhost:5437/invoice_service_db?serverTimezone=UTC
+  username: invoice_service_user@2025!#
+  password: 6fbed52a-ea56-4a64-a66e-c34c754a42a2
+  driverClassName: org.postgresql.Driver
+  maximumPoolSize: 5
+  minimumIdle: 5
+  idleTimeout: 30000
+
+invoice-service:
+  clientId: invoice-service
+  clientSecret: 7ec2dc07-96a0-4881-a19d-9db308a4f4bb
+
+order-service:
+  host: http://localhost:8092/order-service
+  findOrderByIdUrl: /v1/orders/internal/{0}
+
+auth-service:
+  host: http://localhost:8091/auth-service
+  getInternalTokenUrl: /v1/auth/internal-token?clientId={0}&clientSecret={1}

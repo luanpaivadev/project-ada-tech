@@ -1,0 +1,20 @@
+spring-datasource:
+  url: jdbc:postgresql://${DB_HOST}:${DB_PORT}/${DB_NAME}?serverTimezone=UTC
+  username: ${DB_USERNAME}
+  password: ${DB_PASSWORD}
+  driverClassName: org.postgresql.Driver
+  maximumPoolSize: 5
+  minimumIdle: 5
+  idleTimeout: 30000
+
+order-service:
+  clientId: ${ORDER_SERVICE_CLIENT_ID}
+  clientSecret: ${ORDER_SERVICE_CLIENT_SECRET}
+
+auth-service:
+  host: ${AUTH_SERVICE_HOST}
+  getInternalTokenUrl: ${AUTH_SERVICE_GET_INTERNAL_TOKEN_URL}
+
+product-service:
+  host: ${PRODUCT_SERVICE_HOST}
+  checkProductInventory: ${PRODUCT_SERVICE_CHECK_PRODUCT_INVENTORY_URL}

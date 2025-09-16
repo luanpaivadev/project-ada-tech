@@ -1,0 +1,31 @@
+server:
+  port: ${SERVER_PORT:8091}
+  servlet:
+    context-path: /auth-service
+
+spring:
+  application:
+    name: auth-service
+  profiles:
+    active: ${PROFILE_ACTIVE:LOCAL}
+  jpa:
+    hibernate:
+      ddl-auto: update
+    generate-ddl: true
+    show-sql: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, metrics, prometheus
+  metrics:
+    enable:
+      jvm: true
+    distribution:
+      slo.http.server.requests: 50ms, 100ms, 200ms, 300ms, 500ms, 1s
+    tags:
+      application: auth-service
+
+jwt:
+  private-key-path: ${JWT_PRIVATE_KEY_PATH}

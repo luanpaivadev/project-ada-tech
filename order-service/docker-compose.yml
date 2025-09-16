@@ -1,0 +1,59 @@
+services:
+
+  order-service-db:
+    image: postgres
+    container_name: order-service-db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=order_service_user@2025!#
+      - POSTGRES_PASSWORD=6fbed52a-ea56-4a64-a66e-c34c754a42a2
+      - POSTGRES_DB=order_service_db
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    ports:
+      - "5434:5432"
+    networks:
+      - local_ecommerce-services
+    volumes:
+      - order_service_db_data:/var/lib/postgresql/data
+
+  redis-service-db:
+    image: redis
+    container_name: redis-service-db
+    restart: unless-stopped
+    environment:
+      REDIS_PASSWORD: 87e0f1b4-ee49-42ea-bdc4-621a62f8f1bd
+    command: ["redis-server", "--appendonly", "yes", "--requirepass", "${REDIS_PASSWORD}"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - local_ecommerce-services
+
+  order-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: order-service
+    restart: unless-stopped
+    env_file:
+      - ./order-service.env
+    ports:
+      - "8092:8092"
+    volumes:
+      - "C:/Users/luan.paiva/Documents/Projeto ADA/public_key.pem:/app/keys/public_key.pem:ro"
+    networks:
+      - local_ecommerce-services
+    depends_on:
+      - order-service-db
+      - redis-service-db
+
+networks:
+  local_ecommerce-services:
+    external: true
+
+volumes:
+  order_service_db_data:
+    driver: local
+  redis_data:
+    driver: local
