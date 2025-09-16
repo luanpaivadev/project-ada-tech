@@ -192,6 +192,7 @@ services:
       - local_ecommerce-services
     depends_on:
       - invoice-service-db
+      - redis-service-db
 
   notification-service:
     build:
