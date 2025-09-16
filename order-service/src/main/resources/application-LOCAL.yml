@@ -18,3 +18,6 @@ auth-service:
 product-service:
   host: http://localhost:8093/product-service
   checkProductInventory: /v1/products/check-product-inventory/product/{0}/quantity/{1}
+
+payment-gateway:
+  clientSecret: 29a55997-5017-4947-8714-09382965ec5f
