@@ -17,10 +17,12 @@ public class PaymentGatewayService implements PaymentGatewayServicePort {
     private final PaymentGatewayProperties properties;
 
     @Override
-    public Boolean validateClientSecret(String clientSecret) {
+    public void validateClientSecret(String clientSecret) {
         if (isBlank(clientSecret)) {
             throw new BadRequestException("Payment gateway client secret not found");
         }
-        return Objects.equals(properties.getClientSecret(), clientSecret);
+        if (!Objects.equals(properties.getClientSecret(), clientSecret)) {
+            throw new BadRequestException("Invalid payment gateway client secret");
+        }
     }
 }
