@@ -1,0 +1,3 @@
+VHOST: /
+QUEUE: notification.status_order
+INDEX: v2

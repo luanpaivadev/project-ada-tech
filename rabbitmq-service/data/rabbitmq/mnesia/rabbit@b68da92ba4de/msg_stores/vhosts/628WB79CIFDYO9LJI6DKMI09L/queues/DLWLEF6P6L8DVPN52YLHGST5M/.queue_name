@@ -1,0 +1,3 @@
+VHOST: /
+QUEUE: product.payment_approved
+INDEX: v2

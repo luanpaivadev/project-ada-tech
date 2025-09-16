@@ -1,0 +1,19 @@
+services:
+
+  rabbitmq:
+    image: rabbitmq:4-management
+    container_name: rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+    environment:
+      - RABBITMQ_DEFAULT_USER=user
+      - RABBITMQ_DEFAULT_PASS=0d76739a-a5ec-4ee2-a847-56081ce6a6c9
+    volumes:
+      - ./data/rabbitmq:/var/lib/rabbitmq/
+    networks:
+      - local_ecommerce-services
+
+networks:
+  local_ecommerce-services:
+    external: true

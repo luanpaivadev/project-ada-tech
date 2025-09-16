@@ -1,0 +1,3 @@
+VHOST: /
+QUEUE: order.tax_invoice_issued
+INDEX: v2
