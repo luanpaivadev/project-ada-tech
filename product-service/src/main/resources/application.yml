@@ -5,9 +5,11 @@ spring:
     active: ${PROFILE_ACTIVE:LOCAL}
   jpa:
     hibernate:
-      ddl-auto: update
-    generate-ddl: true
+#      ddl-auto: update
+#    generate-ddl: true
     show-sql: false
+  flyway:
+    enabled: true
   rabbitmq:
     host: ${SPRING_RABBITMQ_HOST:localhost}
     port: ${SPRING_RABBITMQ_PORT:5672}
