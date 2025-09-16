@@ -1,0 +1,232 @@
+networks:
+  local_ecommerce-services:
+    driver: bridge
+
+volumes:
+  auth_service_db_data:
+    driver: local
+  order_service_db_data:
+    driver: local
+  product_service_db_data:
+    driver: local
+  invoice_service_db_data:
+    driver: local
+  notification_service_db_data:
+    driver: local
+  redis_data:
+    driver: local
+
+services:
+
+  auth-service-db:
+    image: postgres
+    container_name: auth-service-db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=auth_service_user@2025!#
+      - POSTGRES_PASSWORD=6fbed52a-ea56-4a64-a66e-c34c754a42a2
+      - POSTGRES_DB=auth_service_db
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    ports:
+      - "5433:5432"
+    networks:
+      - local_ecommerce-services
+    volumes:
+      - auth_service_db_data:/var/lib/postgresql/data
+
+  order-service-db:
+    image: postgres
+    container_name: order-service-db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=order_service_user@2025!#
+      - POSTGRES_PASSWORD=6fbed52a-ea56-4a64-a66e-c34c754a42a2
+      - POSTGRES_DB=order_service_db
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    ports:
+      - "5434:5432"
+    networks:
+      - local_ecommerce-services
+    volumes:
+      - order_service_db_data:/var/lib/postgresql/data
+
+  product-service-db:
+    image: postgres
+    container_name: product-service-db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=product_service_user@2025!#
+      - POSTGRES_PASSWORD=6fbed52a-ea56-4a64-a66e-c34c754a42a2
+      - POSTGRES_DB=product_service_db
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    ports:
+      - "5435:5432"
+    networks:
+      - local_ecommerce-services
+    volumes:
+      - product_service_db_data:/var/lib/postgresql/data
+
+  invoice-service-db:
+    image: postgres
+    container_name: invoice-service-db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=invoice_service_user@2025!#
+      - POSTGRES_PASSWORD=6fbed52a-ea56-4a64-a66e-c34c754a42a2
+      - POSTGRES_DB=invoice_service_db
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    ports:
+      - "5437:5432"
+    networks:
+      - local_ecommerce-services
+    volumes:
+      - invoice_service_db_data:/var/lib/postgresql/data
+
+  notification-service-db:
+    image: postgres
+    container_name: notification-service-db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=notification_service_user@2025!#
+      - POSTGRES_PASSWORD=6fbed52a-ea56-4a64-a66e-c34c754a42a2
+      - POSTGRES_DB=notification_service_db
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    ports:
+      - "5436:5432"
+    networks:
+      - local_ecommerce-services
+    volumes:
+      - notification_service_db_data:/var/lib/postgresql/data
+
+  redis-service-db:
+    image: redis
+    container_name: redis-service-db
+    restart: unless-stopped
+    environment:
+      REDIS_PASSWORD: 87e0f1b4-ee49-42ea-bdc4-621a62f8f1bd
+    command: ["redis-server", "--appendonly", "yes", "--requirepass", "${REDIS_PASSWORD}"]
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - local_ecommerce-services
+
+  rabbitmq:
+    image: rabbitmq:4-management
+    container_name: rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+    environment:
+      - RABBITMQ_DEFAULT_USER=user
+      - RABBITMQ_DEFAULT_PASS=0d76739a-a5ec-4ee2-a847-56081ce6a6c9
+    volumes:
+      - ./rabbitmq-service/data/rabbitmq:/var/lib/rabbitmq/
+    networks:
+      - local_ecommerce-services
+
+  auth-service:
+    build:
+      context: ./auth-service
+      dockerfile: Dockerfile
+    container_name: auth-service
+    restart: unless-stopped
+    env_file:
+      - ./auth-service/auth-service.env
+    ports:
+      - "8091:8091"
+    volumes:
+      - "./private_key.pem:/app/keys/private_key.pem:ro"
+    networks:
+      - local_ecommerce-services
+
+  order-service:
+    build:
+      context: ./order-service
+      dockerfile: Dockerfile
+    container_name: order-service
+    restart: unless-stopped
+    env_file:
+      - ./order-service/order-service.env
+    ports:
+      - "8092:8092"
+    volumes:
+      - "./public_key.pem:/app/keys/public_key.pem:ro"
+    networks:
+      - local_ecommerce-services
+    depends_on:
+      - order-service-db
+      - redis-service-db
+
+  product-service:
+    build:
+      context: ./product-service
+      dockerfile: Dockerfile
+    container_name: product-service
+    restart: unless-stopped
+    env_file:
+      - ./product-service/product-service.env
+    ports:
+      - "8093:8093"
+    volumes:
+      - "./public_key.pem:/app/keys/public_key.pem:ro"
+    networks:
+      - local_ecommerce-services
+    depends_on:
+      - product-service-db
+
+  invoice-service:
+    build:
+      context: ./invoice-service
+      dockerfile: Dockerfile
+    container_name: invoice-service
+    restart: unless-stopped
+    env_file:
+      - ./invoice-service/invoice-service.env
+    ports:
+      - "8095:8095"
+    volumes:
+      - "./public_key.pem:/app/keys/public_key.pem:ro"
+    networks:
+      - local_ecommerce-services
+    depends_on:
+      - invoice-service-db
+
+  notification-service:
+    build:
+      context: ./notification-service
+      dockerfile: Dockerfile
+    container_name: notification-service
+    restart: unless-stopped
+    env_file:
+      - ./notification-service/notification-service.env
+    ports:
+      - "8094:8094"
+    networks:
+      - local_ecommerce-services
+    depends_on:
+      - notification-service-db
+
+  prometheus:
+    image: prom/prometheus:latest
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./grafana-service/prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+    networks:
+      - local_ecommerce-services
+
+  grafana:
+    image: grafana/grafana:latest
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+    networks:
+      - local_ecommerce-services

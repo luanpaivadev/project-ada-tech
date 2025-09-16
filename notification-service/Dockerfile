@@ -1,17 +1,21 @@
-# Estágio de construção (Builder)
-FROM eclipse-temurin:21-alpine AS builder
+# Etapa 1: Builder (gera o .jar)
+FROM maven:3.9.6-eclipse-temurin-21-alpine AS builder
 
-# Instalar tzdata e configurar timezone no builder
+# Instalar tzdata e configurar timezone
 RUN apk --no-cache add tzdata \
     && cp /usr/share/zoneinfo/America/Sao_Paulo /etc/localtime \
     && echo "America/Sao_Paulo" > /etc/timezone
 
 WORKDIR /app
 
-# Copiar o JAR da aplicação
-COPY target/*.jar /app/api.jar
+# Copiar arquivos de configuração e código fonte
+COPY pom.xml .
+COPY src ./src
 
-# Estágio de execução (Runtime)
+# Rodar build (gera o jar em target/)
+RUN mvn clean package -DskipTests
+
+# Etapa 2: Runtime
 FROM eclipse-temurin:21-alpine AS runtime
 
 # Copiar timezone já configurado do builder
@@ -31,8 +35,8 @@ WORKDIR /app
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup
 USER appuser
 
-# Copiar o JAR da aplicação
-COPY --from=builder /app/api.jar /app/api.jar
+# Copiar o JAR compilado do builder
+COPY --from=builder /app/target/*.jar /app/api.jar
 
 EXPOSE 8080
 
