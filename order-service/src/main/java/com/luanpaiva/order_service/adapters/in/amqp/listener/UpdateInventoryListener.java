@@ -28,7 +28,9 @@ public class UpdateInventoryListener {
     @RabbitHandler
     public void orderUpdateInventory(byte[] message) throws IOException {
         OrderDTO orderDTO = mapper.readValue(message, OrderDTO.class);
+        log.info("Atualizando status do pedido para {}", StatusOrder.IN_SEPARATION);
         Order order = orderServicePort.updateStatusOrder(orderDTO.getId(), StatusOrder.IN_SEPARATION);
+        log.info("Status atualizado com sucesso.");
         sendMessagePort.send(Queues.NOTIFICATION_STATUS_ORDER_QUEUE, order, OrderDTO.class);
     }
 }
