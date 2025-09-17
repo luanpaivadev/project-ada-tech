@@ -58,7 +58,7 @@ O auth-service possui dois microserviços cadastrados que podem gerar tokens par
 | ID | Client ID | Client Secret | Roles |
 |----|-----------|---------------|-------|
 | 4c1da05b-449d-45e6-8b17-46d9e2ecf6ee | order-service | 66793dcf-fb4d-402e-8cef-5d5e66c9505e | ROLE_SERVICE |
-| e164e48d-795e-4242-9093-6a1774eb6503 | invoice-service | (valor encriptado) | ROLE_SERVICE |
+| e164e48d-795e-4242-9093-6a1774eb6503 | invoice-service | 7ec2dc07-96a0-4881-a19d-9db308a4f4bb | ROLE_SERVICE |
 
 #### Gerando Token para Serviços
 
