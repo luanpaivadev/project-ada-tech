@@ -37,9 +37,8 @@ public class OrderRepositoryImpl implements OrderRepositoryPort {
 
     @Override
     @Transactional
-    public Optional<Order> updateStatusOrder(UUID orderId, StatusOrder statusOrder) {
-        return repositoryJpa.updateStatusOrder(orderId, statusOrder)
-                .map(orderEntity -> mapper.map(orderEntity, Order.class));
+    public void updateStatusOrder(UUID orderId, StatusOrder statusOrder) {
+        repositoryJpa.updateStatusOrder(orderId, statusOrder);
     }
 
     @Override

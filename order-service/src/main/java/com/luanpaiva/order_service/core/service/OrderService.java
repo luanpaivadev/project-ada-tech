@@ -125,8 +125,8 @@ public class OrderService implements OrderServicePort {
 
     @Override
     public Order updateStatusOrder(UUID orderId, StatusOrder statusOrder) {
-        return orderRepositoryPort.updateStatusOrder(orderId, statusOrder)
-                .orElseThrow(() -> new NotFountException("Order not found"));
+        orderRepositoryPort.updateStatusOrder(orderId, statusOrder);
+        return findById(orderId);
     }
 
     @Override

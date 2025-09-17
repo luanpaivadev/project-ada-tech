@@ -14,7 +14,7 @@ public interface OrderRepositoryPort {
 
     Order createOrUpdateOrder(Order order);
 
-    Optional<Order> updateStatusOrder(UUID orderId, StatusOrder statusOrder);
+    void updateStatusOrder(UUID orderId, StatusOrder statusOrder);
 
     Page<Order> findOrdersInSeparation(Pageable pageable);
 }
