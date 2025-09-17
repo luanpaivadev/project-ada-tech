@@ -1,6 +1,5 @@
 package com.luanpaiva.order_service.adapters.out.repository.jpa;
 
-import com.luanpaiva.order_service.adapters.out.model.OrderDTO;
 import com.luanpaiva.order_service.adapters.out.repository.model.OrderEntity;
 import com.luanpaiva.order_service.core.model.Order;
 import com.luanpaiva.order_service.core.model.StatusOrder;
