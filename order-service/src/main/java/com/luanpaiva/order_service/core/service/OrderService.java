@@ -17,6 +17,7 @@ import com.luanpaiva.order_service.core.ports.out.CacheServicePort;
 import com.luanpaiva.order_service.core.ports.out.OrderRepositoryPort;
 import com.luanpaiva.order_service.core.ports.out.ProductServicePort;
 import com.luanpaiva.order_service.core.ports.out.SendMessagePort;
+import com.luanpaiva.order_service.core.utils.Queues;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -26,12 +27,10 @@ import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
-import static java.util.Objects.nonNull;
 import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public class OrderService implements OrderServicePort {
 
-    private static final String NOTIFICATION_STATUS_ORDER = "notification.status_order";
     private static final String PRODUCT_PAYMENT_APPROVED_QUEUE = "product.payment_approved";
 
     private final OrderRepositoryPort orderRepositoryPort;
@@ -95,7 +94,7 @@ public class OrderService implements OrderServicePort {
         order.setTotalAmount(totalAmount);
         order.setPaymentMethod(orderInput.getPaymentMethod());
         order.setStatus(StatusOrder.PAYMENT_PENDING);
-        sendMessagePort.send(NOTIFICATION_STATUS_ORDER, StatusOrder.PAYMENT_PENDING, null);
+        sendMessagePort.send(Queues.NOTIFICATION_STATUS_ORDER_QUEUE, StatusOrder.PAYMENT_PENDING, null);
         return orderRepositoryPort.createOrUpdateOrder(order);
     }
 
@@ -107,15 +106,15 @@ public class OrderService implements OrderServicePort {
                 case APPROVED -> {
                     order.setStatus(StatusOrder.PAYMENT_APPROVED);
                     sendMessagePort.send(PRODUCT_PAYMENT_APPROVED_QUEUE, order, OrderDTO.class);
-                    sendMessagePort.send(NOTIFICATION_STATUS_ORDER, StatusOrder.PAYMENT_APPROVED, null);
+                    sendMessagePort.send(Queues.NOTIFICATION_STATUS_ORDER_QUEUE, StatusOrder.PAYMENT_APPROVED, null);
                 }
                 case FAILURE -> {
                     order.setStatus(StatusOrder.PAYMENT_FAILURE);
-                    sendMessagePort.send(NOTIFICATION_STATUS_ORDER, StatusOrder.PAYMENT_FAILURE, null);
+                    sendMessagePort.send(Queues.NOTIFICATION_STATUS_ORDER_QUEUE, StatusOrder.PAYMENT_FAILURE, null);
                 }
                 case REJECTED -> {
                     order.setStatus(StatusOrder.PAYMENT_REJECTED);
-                    sendMessagePort.send(NOTIFICATION_STATUS_ORDER, StatusOrder.PAYMENT_REJECTED, null);
+                    sendMessagePort.send(Queues.NOTIFICATION_STATUS_ORDER_QUEUE, StatusOrder.PAYMENT_REJECTED, null);
                 }
             }
             order.setPaymentId(payload.getPaymentId());

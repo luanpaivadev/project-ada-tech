@@ -9,6 +9,7 @@ import com.luanpaiva.order_service.core.model.StatusOrder;
 import com.luanpaiva.order_service.core.ports.in.OrderServicePort;
 import com.luanpaiva.order_service.core.ports.out.PaymentGatewayServicePort;
 import com.luanpaiva.order_service.core.ports.out.SendMessagePort;
+import com.luanpaiva.order_service.core.utils.Queues;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -79,7 +80,7 @@ public class OrderController {
     public ResponseEntity<Void> updateOrderInDelivery(@PathVariable UUID orderId,
                                                       @RequestParam StatusOrder statusOrder) {
         orderServicePort.updateStatusOrder(orderId, statusOrder);
-        sendMessagePort.send("notification.status_order", statusOrder, null);
+        sendMessagePort.send(Queues.NOTIFICATION_STATUS_ORDER_QUEUE, statusOrder, null);
         return ResponseEntity.ok().build();
     }
 

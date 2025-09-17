@@ -5,6 +5,7 @@ import com.luanpaiva.order_service.adapters.in.amqp.listener.model.InvoiceDTO;
 import com.luanpaiva.order_service.core.model.StatusOrder;
 import com.luanpaiva.order_service.core.ports.in.OrderServicePort;
 import com.luanpaiva.order_service.core.ports.out.SendMessagePort;
+import com.luanpaiva.order_service.core.utils.Queues;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
@@ -27,6 +28,6 @@ public class TaxInvoiceIssuedListener {
     public void orderTaxInvoiceIssued(byte[] message) throws IOException {
         InvoiceDTO invoiceDTO = mapper.readValue(message, InvoiceDTO.class);
         orderServicePort.updateStatusOrder(invoiceDTO.getOrderId(), StatusOrder.TAX_INVOICE_ISSUED);
-        sendMessagePort.send("notification.status_order", StatusOrder.TAX_INVOICE_ISSUED, null);
+        sendMessagePort.send(Queues.NOTIFICATION_STATUS_ORDER_QUEUE, StatusOrder.TAX_INVOICE_ISSUED, null);
     }
 }

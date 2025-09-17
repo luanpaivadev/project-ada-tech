@@ -5,6 +5,7 @@ import com.luanpaiva.order_service.adapters.out.model.OrderDTO;
 import com.luanpaiva.order_service.core.model.StatusOrder;
 import com.luanpaiva.order_service.core.ports.in.OrderServicePort;
 import com.luanpaiva.order_service.core.ports.out.SendMessagePort;
+import com.luanpaiva.order_service.core.utils.Queues;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
@@ -27,6 +28,6 @@ public class UpdateInventoryListener {
     public void orderUpdateInventory(byte[] message) throws IOException {
         OrderDTO orderDTO = mapper.readValue(message, OrderDTO.class);
         orderServicePort.updateStatusOrder(orderDTO.getId(), StatusOrder.IN_SEPARATION);
-        sendMessagePort.send("notification.status_order", StatusOrder.IN_SEPARATION, null);
+        sendMessagePort.send(Queues.NOTIFICATION_STATUS_ORDER_QUEUE, StatusOrder.IN_SEPARATION, null);
     }
 }
