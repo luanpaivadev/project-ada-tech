@@ -22,11 +22,8 @@ services:
     image: postgres
     container_name: auth-service-db
     restart: unless-stopped
-    environment:
-      - POSTGRES_USER=auth_service_user@2025!#
-      - POSTGRES_PASSWORD=6fbed52a-ea56-4a64-a66e-c34c754a42a2
-      - POSTGRES_DB=auth_service_db
-      - PGDATA=/var/lib/postgresql/data/pgdata
+    env_file:
+      - ./auth-service/auth-service-db.env
     ports:
       - "5433:5432"
     networks:
@@ -38,11 +35,8 @@ services:
     image: postgres
     container_name: order-service-db
     restart: unless-stopped
-    environment:
-      - POSTGRES_USER=order_service_user@2025!#
-      - POSTGRES_PASSWORD=6fbed52a-ea56-4a64-a66e-c34c754a42a2
-      - POSTGRES_DB=order_service_db
-      - PGDATA=/var/lib/postgresql/data/pgdata
+    env_file:
+      - ./order-service/order-service-db.env
     ports:
       - "5434:5432"
     networks:
@@ -54,11 +48,8 @@ services:
     image: postgres
     container_name: product-service-db
     restart: unless-stopped
-    environment:
-      - POSTGRES_USER=product_service_user@2025!#
-      - POSTGRES_PASSWORD=6fbed52a-ea56-4a64-a66e-c34c754a42a2
-      - POSTGRES_DB=product_service_db
-      - PGDATA=/var/lib/postgresql/data/pgdata
+    env_file:
+      - ./product-service/product-service-db.env
     ports:
       - "5435:5432"
     networks:
@@ -70,11 +61,8 @@ services:
     image: postgres
     container_name: invoice-service-db
     restart: unless-stopped
-    environment:
-      - POSTGRES_USER=invoice_service_user@2025!#
-      - POSTGRES_PASSWORD=6fbed52a-ea56-4a64-a66e-c34c754a42a2
-      - POSTGRES_DB=invoice_service_db
-      - PGDATA=/var/lib/postgresql/data/pgdata
+    env_file:
+      - ./invoice-service/invoice-service-db.env
     ports:
       - "5437:5432"
     networks:
@@ -86,11 +74,8 @@ services:
     image: postgres
     container_name: notification-service-db
     restart: unless-stopped
-    environment:
-      - POSTGRES_USER=notification_service_user@2025!#
-      - POSTGRES_PASSWORD=6fbed52a-ea56-4a64-a66e-c34c754a42a2
-      - POSTGRES_DB=notification_service_db
-      - PGDATA=/var/lib/postgresql/data/pgdata
+    env_file:
+      - ./notification-service/notification-service-db.env
     ports:
       - "5436:5432"
     networks:
@@ -102,8 +87,8 @@ services:
     image: redis
     container_name: redis-service-db
     restart: unless-stopped
-    environment:
-      REDIS_PASSWORD: 87e0f1b4-ee49-42ea-bdc4-621a62f8f1bd
+    env_file:
+      - ./redis-service/redis-service-db.env
     command: ["redis-server", "--appendonly", "yes", "--requirepass", "${REDIS_PASSWORD}"]
     ports:
       - "6379:6379"
@@ -118,9 +103,8 @@ services:
     ports:
       - 5672:5672
       - 15672:15672
-    environment:
-      - RABBITMQ_DEFAULT_USER=user
-      - RABBITMQ_DEFAULT_PASS=0d76739a-a5ec-4ee2-a847-56081ce6a6c9
+    env_file:
+      - ./rabbitmq-service/rabbitmq.env
     volumes:
       - ./rabbitmq-service/data/rabbitmq:/var/lib/rabbitmq/
     networks:
@@ -226,8 +210,7 @@ services:
     container_name: grafana
     ports:
       - "3000:3000"
-    environment:
-      - GF_SECURITY_ADMIN_USER=admin
-      - GF_SECURITY_ADMIN_PASSWORD=admin
+    env_file:
+      - ./grafana-service/grafana.env
     networks:
       - local_ecommerce-services
