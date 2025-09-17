@@ -1,0 +1,578 @@
+{
+	"info": {
+		"_postman_id": "949a1a71-3bb0-4205-ba56-25a8d079ed9b",
+		"name": "Projeto ADA",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "11742623"
+	},
+	"item": [
+		{
+			"name": "AUTH SERVICE",
+			"item": [
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const json = pm.response.json();\r",
+									"pm.collectionVariables.set('access_token', json.accessToken);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "basic",
+							"basic": [
+								{
+									"key": "password",
+									"value": "7ec2dc07-96a0-4881-a19d-9db308a4f4bb",
+									"type": "string"
+								},
+								{
+									"key": "username",
+									"value": "invoice-service",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"johndoe@email.com\",\r\n    \"password\": \"senha123!@\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8091/auth-service/v1/auth/login",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8091",
+							"path": [
+								"auth-service",
+								"v1",
+								"auth",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Internal Token",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const json = pm.response.json();\r",
+									"pm.collectionVariables.set('access_token', json.accessToken);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8091/auth-service/v1/auth/internal-token?clientId=order-service&clientSecret=66793dcf-fb4d-402e-8cef-5d5e66c9505e",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8091",
+							"path": [
+								"auth-service",
+								"v1",
+								"auth",
+								"internal-token"
+							],
+							"query": [
+								{
+									"key": "clientId",
+									"value": "order-service"
+								},
+								{
+									"key": "clientSecret",
+									"value": "66793dcf-fb4d-402e-8cef-5d5e66c9505e"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "ORDER SERVICE",
+			"item": [
+				{
+					"name": "GET",
+					"item": []
+				},
+				{
+					"name": "POST",
+					"item": []
+				},
+				{
+					"name": "PUT",
+					"item": []
+				},
+				{
+					"name": "Order - Find by ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8092/order-service/v1/orders/:orderId",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8092",
+							"path": [
+								"order-service",
+								"v1",
+								"orders",
+								":orderId"
+							],
+							"variable": [
+								{
+									"key": "orderId",
+									"value": "cc0634c5-4d68-49b8-aa68-6237085c1ebf"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Find orders in separation",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8092/order-service/v1/orders/in-separation",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8092",
+							"path": [
+								"order-service",
+								"v1",
+								"orders",
+								"in-separation"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "(Internal) Order - Find by ID",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8092/order-service/v1/orders/internal/:orderId",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8092",
+							"path": [
+								"order-service",
+								"v1",
+								"orders",
+								"internal",
+								":orderId"
+							],
+							"variable": [
+								{
+									"key": "orderId",
+									"value": "cc0634c5-4d68-49b8-aa68-6237085c1ebf"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create new order",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"const json = pm.response.json();\r",
+									"pm.collectionVariables.set(\"orderId\", json.id);"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"items\": [\r\n        {\r\n            \"productId\": \"89ebfeae-67bb-438f-ba49-53fb930bc2f8\",\r\n            \"quantity\": 1\r\n        },\r\n        {\r\n            \"productId\": \"b91e4b42-7524-4daf-a797-3f35183ce425\",\r\n            \"quantity\": 1\r\n        }\r\n    ],\r\n    \"address\": {\r\n        \"recipientName\": \"Jane Doe\",\r\n        \"streetAddress\": \"Rua 1\",\r\n        \"district\": \"Centro\",\r\n        \"city\": \"São Paulo\",\r\n        \"state\": \"São Paulo\",\r\n        \"postalCode\": \"00.0000-00\",\r\n        \"country\": \"Brazil\",\r\n        \"phoneNumber\": \"(21)98888-7777\"\r\n    },\r\n    \"paymentMethod\": \"CREDIT_CARD\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8092/order-service/v1/orders",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8092",
+							"path": [
+								"order-service",
+								"v1",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Webhook Payment",
+					"event": [
+						{
+							"listen": "prerequest",
+							"script": {
+								"exec": [
+									"pm.variables.set(\"x-idempotency-key\", crypto.randomUUID());\r",
+									"pm.variables.set(\"paymentId\", crypto.randomUUID());"
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "x-idempotency-key",
+								"value": "{{x-idempotency-key}}",
+								"type": "text"
+							},
+							{
+								"key": "client-secret",
+								"value": "29a55997-5017-4947-8714-09382965ec5f",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"orderId\": \"{{orderId}}\",\r\n    \"paymentId\": \"{{paymentId}}\",\r\n    \"statusPayment\": \"APPROVED\",\r\n    \"message\": \"Payment Approved\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8092/order-service/v1/orders/webhook/payment",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8092",
+							"path": [
+								"order-service",
+								"v1",
+								"orders",
+								"webhook",
+								"payment"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update status order (IN DELIVERY)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8092/order-service/v1/orders/update-status/{{orderId}}?statusOrder=IN_DELIVERY",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8092",
+							"path": [
+								"order-service",
+								"v1",
+								"orders",
+								"update-status",
+								"{{orderId}}"
+							],
+							"query": [
+								{
+									"key": "statusOrder",
+									"value": "IN_DELIVERY"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update status order (DELIVERED)",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8092/order-service/v1/orders/update-status/{{orderId}}?statusOrder=DELIVERED",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8092",
+							"path": [
+								"order-service",
+								"v1",
+								"orders",
+								"update-status",
+								"{{orderId}}"
+							],
+							"query": [
+								{
+									"key": "statusOrder",
+									"value": "DELIVERED"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "PRODUCT SERVICE",
+			"item": [
+				{
+					"name": "Check product inventory",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8093/product-service/v1/products/check-product-inventory/product/:productId/quantity/:quantityId",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8093",
+							"path": [
+								"product-service",
+								"v1",
+								"products",
+								"check-product-inventory",
+								"product",
+								":productId",
+								"quantity",
+								":quantityId"
+							],
+							"variable": [
+								{
+									"key": "productId",
+									"value": "1ab453a9-319e-463b-9522-664097da589d"
+								},
+								{
+									"key": "quantityId",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "INVOICE SERVICE",
+			"item": [
+				{
+					"name": "Generated Invoice",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{access_token}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:8095/invoice-service/v1/invoices?orderId={{orderId}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8095",
+							"path": [
+								"invoice-service",
+								"v1",
+								"invoices"
+							],
+							"query": [
+								{
+									"key": "orderId",
+									"value": "{{orderId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "access_token",
+			"value": ""
+		},
+		{
+			"key": "client_id",
+			"value": ""
+		},
+		{
+			"key": "client_secret",
+			"value": ""
+		},
+		{
+			"key": "orderId",
+			"value": ""
+		}
+	]
+}
