@@ -92,7 +92,7 @@ public class OrderService implements OrderServicePort {
         order.setTotalAmount(totalAmount);
         order.setPaymentMethod(orderInput.getPaymentMethod());
         order.setStatus(StatusOrder.PAYMENT_PENDING);
-        sendMessagePort.send(Queues.NOTIFICATION_STATUS_ORDER_QUEUE, StatusOrder.PAYMENT_PENDING, null);
+        sendMessagePort.send(Queues.NOTIFICATION_STATUS_ORDER_QUEUE, order, OrderDTO.class);
         return orderRepositoryPort.createOrUpdateOrder(order);
     }
 
@@ -104,15 +104,15 @@ public class OrderService implements OrderServicePort {
                 case APPROVED -> {
                     order.setStatus(StatusOrder.PAYMENT_APPROVED);
                     sendMessagePort.send(Queues.PRODUCT_PAYMENT_APPROVED_QUEUE, order, OrderDTO.class);
-                    sendMessagePort.send(Queues.NOTIFICATION_STATUS_ORDER_QUEUE, StatusOrder.PAYMENT_APPROVED, null);
+                    sendMessagePort.send(Queues.NOTIFICATION_STATUS_ORDER_QUEUE, order, OrderDTO.class);
                 }
                 case FAILURE -> {
                     order.setStatus(StatusOrder.PAYMENT_FAILURE);
-                    sendMessagePort.send(Queues.NOTIFICATION_STATUS_ORDER_QUEUE, StatusOrder.PAYMENT_FAILURE, null);
+                    sendMessagePort.send(Queues.NOTIFICATION_STATUS_ORDER_QUEUE, order, OrderDTO.class);
                 }
                 case REJECTED -> {
                     order.setStatus(StatusOrder.PAYMENT_REJECTED);
-                    sendMessagePort.send(Queues.NOTIFICATION_STATUS_ORDER_QUEUE, StatusOrder.PAYMENT_REJECTED, null);
+                    sendMessagePort.send(Queues.NOTIFICATION_STATUS_ORDER_QUEUE, order, OrderDTO.class);
                 }
             }
             order.setPaymentId(payload.getPaymentId());
@@ -124,12 +124,13 @@ public class OrderService implements OrderServicePort {
     }
 
     @Override
-    public void updateStatusOrder(UUID orderId, StatusOrder statusOrder) {
-        orderRepositoryPort.updateStatusOrder(orderId, statusOrder);
+    public Order updateStatusOrder(UUID orderId, StatusOrder statusOrder) {
+        return orderRepositoryPort.updateStatusOrder(orderId, statusOrder)
+                .orElseThrow(() -> new NotFountException("Order not found"));
     }
 
     @Override
-    public Page<OrderDTO> findOrdersInSeparation(Pageable pageable) {
+    public Page<Order> findOrdersInSeparation(Pageable pageable) {
         return orderRepositoryPort.findOrdersInSeparation(pageable);
     }
 

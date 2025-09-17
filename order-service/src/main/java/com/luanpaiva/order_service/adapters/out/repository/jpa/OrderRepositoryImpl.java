@@ -38,13 +38,14 @@ public class OrderRepositoryImpl implements OrderRepositoryPort {
 
     @Override
     @Transactional
-    public void updateStatusOrder(UUID orderId, StatusOrder statusOrder) {
-        repositoryJpa.updateStatusOrder(orderId, statusOrder);
+    public Optional<Order> updateStatusOrder(UUID orderId, StatusOrder statusOrder) {
+        return repositoryJpa.updateStatusOrder(orderId, statusOrder)
+                .map(orderEntity -> mapper.map(orderEntity, Order.class));
     }
 
     @Override
-    public Page<OrderDTO> findOrdersInSeparation(Pageable pageable) {
+    public Page<Order> findOrdersInSeparation(Pageable pageable) {
         return repositoryJpa.findOrdersInSeparation(pageable)
-                .map(orderEntity -> mapper.map(orderEntity, OrderDTO.class));
+                .map(orderEntity -> mapper.map(orderEntity, Order.class));
     }
 }

@@ -1,6 +1,5 @@
 package com.luanpaiva.order_service.core.ports.out;
 
-import com.luanpaiva.order_service.adapters.out.model.OrderDTO;
 import com.luanpaiva.order_service.core.model.Order;
 import com.luanpaiva.order_service.core.model.StatusOrder;
 import org.springframework.data.domain.Page;
@@ -15,7 +14,7 @@ public interface OrderRepositoryPort {
 
     Order createOrUpdateOrder(Order order);
 
-    void updateStatusOrder(UUID orderId, StatusOrder statusOrder);
+    Optional<Order> updateStatusOrder(UUID orderId, StatusOrder statusOrder);
 
-    Page<OrderDTO> findOrdersInSeparation(Pageable pageable);
+    Page<Order> findOrdersInSeparation(Pageable pageable);
 }

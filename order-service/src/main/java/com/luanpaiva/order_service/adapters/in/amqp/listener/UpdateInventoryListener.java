@@ -2,6 +2,7 @@ package com.luanpaiva.order_service.adapters.in.amqp.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.luanpaiva.order_service.adapters.out.model.OrderDTO;
+import com.luanpaiva.order_service.core.model.Order;
 import com.luanpaiva.order_service.core.model.StatusOrder;
 import com.luanpaiva.order_service.core.ports.in.OrderServicePort;
 import com.luanpaiva.order_service.core.ports.out.SendMessagePort;
@@ -27,7 +28,7 @@ public class UpdateInventoryListener {
     @RabbitHandler
     public void orderUpdateInventory(byte[] message) throws IOException {
         OrderDTO orderDTO = mapper.readValue(message, OrderDTO.class);
-        orderServicePort.updateStatusOrder(orderDTO.getId(), StatusOrder.IN_SEPARATION);
-        sendMessagePort.send(Queues.NOTIFICATION_STATUS_ORDER_QUEUE, StatusOrder.IN_SEPARATION, null);
+        Order order = orderServicePort.updateStatusOrder(orderDTO.getId(), StatusOrder.IN_SEPARATION);
+        sendMessagePort.send(Queues.NOTIFICATION_STATUS_ORDER_QUEUE, order, OrderDTO.class);
     }
 }

@@ -72,15 +72,16 @@ public class OrderController {
 
     @GetMapping("/in-separation")
     public ResponseEntity<Page<OrderDTO>> findOrdersInSeparation(Pageable pageable) {
-        Page<OrderDTO> orders = orderServicePort.findOrdersInSeparation(pageable);
-        return ResponseEntity.ok().body(orders);
+        Page<Order> orders = orderServicePort.findOrdersInSeparation(pageable);
+        Page<OrderDTO> orderDTOS = orders.map(orderDTO -> mapper.map(orders, OrderDTO.class));
+        return ResponseEntity.ok().body(orderDTOS);
     }
 
     @PutMapping("/update-status/{orderId}")
     public ResponseEntity<Void> updateOrderInDelivery(@PathVariable UUID orderId,
                                                       @RequestParam StatusOrder statusOrder) {
-        orderServicePort.updateStatusOrder(orderId, statusOrder);
-        sendMessagePort.send(Queues.NOTIFICATION_STATUS_ORDER_QUEUE, statusOrder, null);
+        Order order = orderServicePort.updateStatusOrder(orderId, statusOrder);
+        sendMessagePort.send(Queues.NOTIFICATION_STATUS_ORDER_QUEUE, order, OrderDTO.class);
         return ResponseEntity.ok().build();
     }
 

@@ -2,6 +2,8 @@ package com.luanpaiva.order_service.adapters.in.amqp.listener;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.luanpaiva.order_service.adapters.in.amqp.listener.model.InvoiceDTO;
+import com.luanpaiva.order_service.adapters.out.model.OrderDTO;
+import com.luanpaiva.order_service.core.model.Order;
 import com.luanpaiva.order_service.core.model.StatusOrder;
 import com.luanpaiva.order_service.core.ports.in.OrderServicePort;
 import com.luanpaiva.order_service.core.ports.out.SendMessagePort;
@@ -27,7 +29,7 @@ public class TaxInvoiceIssuedListener {
     @RabbitHandler
     public void orderTaxInvoiceIssued(byte[] message) throws IOException {
         InvoiceDTO invoiceDTO = mapper.readValue(message, InvoiceDTO.class);
-        orderServicePort.updateStatusOrder(invoiceDTO.getOrderId(), StatusOrder.TAX_INVOICE_ISSUED);
-        sendMessagePort.send(Queues.NOTIFICATION_STATUS_ORDER_QUEUE, StatusOrder.TAX_INVOICE_ISSUED, null);
+        Order order = orderServicePort.updateStatusOrder(invoiceDTO.getOrderId(), StatusOrder.TAX_INVOICE_ISSUED);
+        sendMessagePort.send(Queues.NOTIFICATION_STATUS_ORDER_QUEUE, order, OrderDTO.class);
     }
 }
