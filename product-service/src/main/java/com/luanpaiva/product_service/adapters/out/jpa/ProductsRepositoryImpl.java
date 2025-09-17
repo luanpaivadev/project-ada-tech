@@ -4,6 +4,8 @@ import com.luanpaiva.product_service.core.model.Product;
 import com.luanpaiva.product_service.core.ports.out.ProductsRepositoryPort;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,5 +29,11 @@ public class ProductsRepositoryImpl implements ProductsRepositoryPort {
     @Transactional
     public void updateInventory(UUID productId, Integer quantity) {
         repositoryJpa.updateInventory(productId, quantity);
+    }
+
+    @Override
+    public Page<Product> findAll(Pageable pageable) {
+        return repositoryJpa.findAll(pageable)
+                .map(productEntity -> mapper.map(productEntity, Product.class));
     }
 }

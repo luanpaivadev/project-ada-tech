@@ -5,6 +5,8 @@ import com.luanpaiva.product_service.core.exceptions.NotFoundException;
 import com.luanpaiva.product_service.core.model.Product;
 import com.luanpaiva.product_service.core.ports.in.ProductServicePort;
 import com.luanpaiva.product_service.core.ports.out.ProductsRepositoryPort;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.UUID;
 
@@ -29,5 +31,10 @@ public class ProductService implements ProductServicePort {
             Integer quantity = item.getQuantity();
             productsRepositoryPort.updateInventory(productId, quantity);
         });
+    }
+
+    @Override
+    public Page<Product> findAll(Pageable pageable) {
+        return productsRepositoryPort.findAll(pageable);
     }
 }
