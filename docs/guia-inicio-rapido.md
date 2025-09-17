@@ -2,7 +2,7 @@
 
 ## Testando o Sistema
 
-Você pode testar o sistema usando a collection do Postman disponível na raiz do projeto (`Projeto ADA.postman_collection.json`) ou usando os comandos curl abaixo.
+Você pode testar o sistema usando a collection do Postman [Projeto ADA.postman_collection.json](./Projeto%20ADA.postman_collection.json) ou usando os comandos curl abaixo.
 
 ### 1. Autenticação
 
