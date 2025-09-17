@@ -78,8 +78,8 @@ public class OrderController {
     }
 
     @PutMapping("/update-status/{orderId}")
-    public ResponseEntity<Void> updateOrderInDelivery(@PathVariable UUID orderId,
-                                                      @RequestParam StatusOrder statusOrder) {
+    public ResponseEntity<Void> updateStatusOrder(@PathVariable UUID orderId,
+                                                  @RequestParam StatusOrder statusOrder) {
         Order order = orderServicePort.updateStatusOrder(orderId, statusOrder);
         sendMessagePort.send(Queues.NOTIFICATION_STATUS_ORDER_QUEUE, order, OrderDTO.class);
         return ResponseEntity.ok().build();
