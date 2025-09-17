@@ -8,11 +8,6 @@ import org.springframework.context.annotation.Configuration;
 public class AmqpConfig {
 
     @Bean
-    public Queue orderUpdatedInventory() {
-        return new Queue("order.updated_inventory", true);
-    }
-
-    @Bean
     public Queue orderInventorySuccessfullyUpdated() {
         return new Queue("order.inventory_successfully_updated", true);
     }
