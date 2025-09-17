@@ -34,9 +34,7 @@ public class SecurityConfig {
                 .sessionManagement(sm -> sm.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers(HttpMethod.GET, "/actuator/**").permitAll();
-                    auth.requestMatchers(HttpMethod.GET,
-                                    "/v1/products",
-                                    "/v1/products/check-product-inventory")
+                    auth.requestMatchers(HttpMethod.GET, "/v1/products", "/v1/products/check-product-inventory/**")
                             .hasAnyRole("EMPLOYEE", "SERVICE");
                     auth.anyRequest().authenticated();
                 })
