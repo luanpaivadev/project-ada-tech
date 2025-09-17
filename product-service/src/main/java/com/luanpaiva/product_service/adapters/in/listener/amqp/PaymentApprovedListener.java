@@ -25,7 +25,9 @@ public class PaymentApprovedListener {
     @RabbitHandler
     public void receive(byte[] message) throws IOException {
         OrderDTO order = mapper.readValue(message, OrderDTO.class);
+        log.info("Removendo itens do estoque. Order ID: {}", order.getId());
         productServicePort.removeProductsFromInventory(order);
+        log.info("Itens removidos com sucesso");
         sendMessagePort.send("order.inventory_successfully_updated", order, null);
     }
 }
