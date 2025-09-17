@@ -31,8 +31,6 @@ import static org.apache.commons.lang3.StringUtils.isBlank;
 
 public class OrderService implements OrderServicePort {
 
-    private static final String PRODUCT_PAYMENT_APPROVED_QUEUE = "product.payment_approved";
-
     private final OrderRepositoryPort orderRepositoryPort;
     private final ProductServicePort productServicePort;
     private final SendMessagePort sendMessagePort;
@@ -105,7 +103,7 @@ public class OrderService implements OrderServicePort {
             switch (payload.getStatusPayment()) {
                 case APPROVED -> {
                     order.setStatus(StatusOrder.PAYMENT_APPROVED);
-                    sendMessagePort.send(PRODUCT_PAYMENT_APPROVED_QUEUE, order, OrderDTO.class);
+                    sendMessagePort.send(Queues.PRODUCT_PAYMENT_APPROVED_QUEUE, order, OrderDTO.class);
                     sendMessagePort.send(Queues.NOTIFICATION_STATUS_ORDER_QUEUE, StatusOrder.PAYMENT_APPROVED, null);
                 }
                 case FAILURE -> {
